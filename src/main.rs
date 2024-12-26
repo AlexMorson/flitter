@@ -1,4 +1,4 @@
-use anyhow::anyhow;
+use anyhow::bail;
 use std::{
     path::PathBuf,
     thread,
@@ -8,6 +8,7 @@ use std::{
 use timer::Timer;
 
 mod bigtext;
+mod dustforce_autosplitter;
 mod rotty;
 mod settings;
 mod split_file;
@@ -21,7 +22,7 @@ static TARGET_FPS: i32 = 60;
 fn main() -> anyhow::Result<()> {
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 2 {
-        return Err(anyhow!("Usage: {} <path_to_splits_file>", args[0]));
+        bail!("Usage: {} <path_to_splits_file>", args[0]);
     }
     let path = PathBuf::from(&args[1]);
 

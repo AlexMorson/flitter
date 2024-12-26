@@ -7,6 +7,7 @@ use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 use crossterm::style::Color;
 use device_query::{DeviceQuery, DeviceState, Keycode};
 
+use crate::dustforce_autosplitter::DustforceAutosplitter;
 use crate::settings::{self, Action, Settings};
 use crate::split_file::{write_split_file, Gold, Split};
 use crate::timer_state::{TimerMode, TimerState};
@@ -19,6 +20,7 @@ pub struct Timer {
     timer_state: TimerState,
     settings: Settings,
     prev_keys: HashSet<Keycode>,
+    dustforce_autosplitter: Option<DustforceAutosplitter>,
 }
 
 impl Timer {
@@ -29,6 +31,14 @@ impl Timer {
             settings::read_settings_file(config_path).context("Failed to read settings file")?
         } else {
             settings::DEFAULT_SETTINGS.clone()
+        };
+
+        let dustforce_autosplitter = match settings.dustforce_autosplitter.clone() {
+            Some(autosplitter) => Some(DustforceAutosplitter::new(
+                autosplitter.split_file,
+                autosplitter.split_on_ss,
+            )?),
+            None => None,
         };
 
         Ok(Self {
@@ -42,6 +52,7 @@ impl Timer {
             },
             settings,
             prev_keys: HashSet::new(),
+            dustforce_autosplitter,
         })
     }
 
@@ -51,12 +62,18 @@ impl Timer {
         }
 
         let global_keys: HashSet<Keycode> = self.device_state.get_keys().into_iter().collect();
-        let actions: Vec<Action> = global_keys
+        let mut actions: Vec<Action> = global_keys
             .iter()
             .filter(|key| !self.prev_keys.contains(key))
             .flat_map(|key| self.settings.global_hotkeys.get(key).copied())
             .collect();
         self.prev_keys = global_keys;
+
+        if let Some(autosplitter) = &mut self.dustforce_autosplitter {
+            while let Some(action) = autosplitter.next_action() {
+                actions.push(action);
+            }
+        }
 
         for action in actions {
             self.apply_action(action)?;

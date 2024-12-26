@@ -7,5 +7,9 @@
     "Backspace": "ResetAndSave",
     "Delete": "ResetAndDelete"
   },
-  "draw_background": true
+  "draw_background": true,
+  "dustforce_autosplitter": {
+      "split_file": "/home/alex/.local/share/Steam/steamapps/common/Dustforce/split.txt",
+      "split_on_ss": true
+  }
 }
