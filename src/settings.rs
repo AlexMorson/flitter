@@ -36,6 +36,7 @@ pub enum Action {
     Split,
     UndoSplit,
     DeleteSplit,
+    SkipSplit,
     ResetAndSave,
     ResetAndDelete,
 }

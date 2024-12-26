@@ -126,6 +126,13 @@ impl Timer {
                         self.timer_state.splits[len - 1] = None;
                     }
                 }
+                Action::SkipSplit => {
+                    if self.timer_state.splits.len()
+                        != self.timer_state.split_file.split_names.len() - 1
+                    {
+                        self.timer_state.splits.push(None);
+                    }
+                }
                 Action::ResetAndSave => {
                     self.timer_state.split_file.attempts += 1;
                     self.save_golds()?; // Also saves attempts
