@@ -65,8 +65,8 @@ pub fn render_view(timer: &TimerState, theme: &Theme) -> Block {
     let mut sections = vec![
         title_block,
         category_block,
-        attempts_block,
-        spacer_block.clone(),
+        // attempts_block,
+        // spacer_block.clone(),
         header_row,
         line_sep.clone(),
     ];
