@@ -10,6 +10,7 @@
   "draw_background": true,
   "dustforce_autosplitter": {
       "split_file": "/home/alex/.local/share/Steam/steamapps/common/Dustforce/split.txt",
-      "split_on_ss": true
+      "split_on_ss": true,
+      "split_on_hub": true
   }
 }

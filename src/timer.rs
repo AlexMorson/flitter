@@ -37,6 +37,7 @@ impl Timer {
             Some(autosplitter) => Some(DustforceAutosplitter::new(
                 autosplitter.split_file,
                 autosplitter.split_on_ss,
+                autosplitter.split_on_hub,
             )?),
             None => None,
         };

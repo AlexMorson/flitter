@@ -51,6 +51,8 @@ pub struct DustforceAutosplitterSettings {
     pub split_file: PathBuf,
     #[serde(default)]
     pub split_on_ss: bool,
+    #[serde(default)]
+    pub split_on_hub: bool,
 }
 
 #[derive(Deserialize)]
