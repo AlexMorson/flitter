@@ -91,11 +91,12 @@ pub struct SegSummary {
 
 pub fn get_run_summary(timer: &TimerState) -> Vec<SegSummary> {
     let mut summary = vec![SegSummary::default(); timer.split_file.split_names.len()];
-    let pb = &timer.split_file.personal_best;
 
     // Calculate PB split times
-    for (i, time) in pb.splits.iter().enumerate() {
-        summary[i].pb_split = time.as_ref().map(|t| t.time);
+    if let Some(pb) = &timer.split_file.personal_best {
+        for (i, time) in pb.splits.iter().enumerate() {
+            summary[i].pb_split = time.as_ref().map(|t| t.time);
+        }
     }
 
     // Calculate PB segment times

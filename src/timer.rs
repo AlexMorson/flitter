@@ -9,7 +9,7 @@ use device_query::{DeviceQuery, DeviceState, Keycode};
 
 use crate::dustforce_autosplitter::DustforceAutosplitter;
 use crate::settings::{self, Action, Settings};
-use crate::split_file::{write_split_file, Gold, Split};
+use crate::split_file::{write_split_file, Gold, PersonalBest, Split};
 use crate::timer_state::{TimerMode, TimerState};
 use crate::utils::{get_run_summary, parse_color};
 use crate::{rotty::Renderer, split_file::read_split_file, view};
@@ -187,12 +187,17 @@ impl Timer {
         let pb = &mut self.timer_state.split_file.personal_best;
 
         let curr_time = splits.last().unwrap().unwrap();
-        let pb_time = pb.splits.last().unwrap().as_ref().unwrap().time;
-        if curr_time < pb_time {
-            pb.splits = splits
-                .iter()
-                .map(|s| s.map(|dur| Split { time: dur }))
-                .collect();
+        let is_current_a_new_pb = pb
+            .as_ref()
+            .is_none_or(|pb| curr_time < pb.splits.last().unwrap().as_ref().unwrap().time);
+        if is_current_a_new_pb {
+            *pb = Some(PersonalBest {
+                attempt: self.timer_state.split_file.attempts,
+                splits: splits
+                    .iter()
+                    .map(|s| s.map(|dur| Split { time: dur }))
+                    .collect(),
+            });
         }
 
         write_split_file(&self.timer_state.split_file)?;
